@@ -1,0 +1,254 @@
+<html><head><style>body {
+   color: black;
+}
+</style></head><body><p>title: &quot;<strong>MATH 3190 Homework 1</strong>&quot;
+subtitle: |
+  Due January 29, 2026\
+  Focus: Notes 1-3\
+  Total Points: 90 + 10 (Self-Critique Comment and Uploading to GitHub) = 100
+format: html # Change this to &quot;html&quot; (without the quotes) to render in html
+urlcolor: blue
+execute: # Will set these as the default for all code chunks
+  eval: true
+  echo: true
+editor_options: </p>
+<h2 id="-chunk_output_type-console">  chunk_output_type: console</h2>
+<p>Note that your homework should be completed in Quarto. You can just add your answers and code to this document in the appropriate part. The file should be rendered as an html document or pdf document (html is quicker to render and you will need an installation of LaTeX to render as a pdf). You will &quot;turn in&quot; this homework by uploading the files, the .qmd and output file, to your GitHub <code>Math_3190_Assignment</code> repository in the <code>Homework/Homework_1</code> directory. Make sure all supporting files (if there are any) are in this directory as well. You should use <code>git</code> and <code>Unix</code> commands in a terminal for this (i.e. don&#39;t manually upload files to GitHub). In addition, you will submit just your html or pdf file on Canvas to unlock the solutions. </p>
+<p>Don&#39;t forget to also put a [self-critique comment]{.underline} on Canvas indicating what you did correctly and incorrectly and include any questions you may have about the assignment after submitting the assignment and thoroughly looking through the solutions.</p>
+<h1 id="problem-1-18-points-">Problem 1 (18 points)</h1>
+<p>In [two different code chunks]{.underline}, write two functions called <code>gghist</code> and <code>ggbox</code>. The first code chunk is already given below, but you&#39;ll need to add the second one. The <code>gghist</code> function should create a ggplot histogram of a variable that is given as a vector. The <code>ggbox</code> function should create a ggplot box plot when a single numeric vector is given or it should create side-by-side box plots if one numeric and one categorical variables are given. You can check if a vector is numeric with the <code>is.numeric()</code> function. Allow the user to indicate whether it should be horizontal or vertical box plots. Make sure you set <code>echo</code> and <code>eval</code> both to <code>true</code> for these code chunks. Also make sure to label the code chunks. </p>
+<pre><code class="lang-{r}">#| label: gghist
+#| echo: <span class="hljs-literal">true</span>
+#| eval: <span class="hljs-literal">true</span>
+
+<span class="hljs-function"><span class="hljs-title">library</span><span class="hljs-params">(ggplot2)</span>
+<span class="hljs-title">gghist</span> &lt;- <span class="hljs-title">function</span><span class="hljs-params">(x, bins=<span class="hljs-number">15</span>)</span>{
+  <span class="hljs-title">if</span><span class="hljs-params">(!is.numeric(x))</span>{
+    <span class="hljs-title">stop</span><span class="hljs-params">(<span class="hljs-string">"Input contains non-numerical value(s)"</span>)</span>
+  }
+  <span class="hljs-title">df</span> &lt;- <span class="hljs-title">data</span>.<span class="hljs-title">frame</span><span class="hljs-params">(x=x)</span>
+  <span class="hljs-title">ggplot</span><span class="hljs-params">(df, aes(x=x))</span>+
+    <span class="hljs-title">geom_histogram</span><span class="hljs-params">(color=<span class="hljs-string">"black"</span>, fill=<span class="hljs-string">"purple"</span>)</span>+
+    <span class="hljs-title">labs</span><span class="hljs-params">(y=<span class="hljs-string">"Amount"</span>, x=<span class="hljs-string">"Value"</span>)</span>
+
+}</span>
+</code></pre>
+<pre><code class="lang-{r}">#| <span class="hljs-built_in">label</span>: ggbox
+#|echo: <span class="hljs-literal">true</span>
+#|<span class="hljs-built_in">eval</span>: <span class="hljs-literal">true</span>
+
+ggbox &lt;- function(x, y=NULL, horizontal=FALSE){
+
+  #Case <span class="hljs-number">1</span>: Single Numeric Vector
+  <span class="hljs-keyword">if</span>(<span class="hljs-built_in">is</span>.null(y)){
+    <span class="hljs-keyword">if</span>(!<span class="hljs-built_in">is</span>.numeric(x)){
+      stop(<span class="hljs-string">"Inputs contain non numerical variables"</span>)
+    }
+    df &lt;- data.frame(x=x)
+#Horizontal <span class="hljs-keyword">or</span> vertical plot?
+    <span class="hljs-keyword">if</span>(horizontal) {
+      ggplot(df, aes(x=x))+
+        geom_boxplot()+
+        labs(x=<span class="hljs-string">"Value"</span>)+
+        theme_minimal()
+    } <span class="hljs-keyword">else</span> {
+      ggplot(df, aes(y=x)) +
+        geom_boxplot()+
+        labs(y=<span class="hljs-string">"Value"</span>)+
+        theme_minimal()
+    }
+#Which variable <span class="hljs-built_in">is</span> numeric? Which <span class="hljs-built_in">is</span> categorical?
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">if</span>(<span class="hljs-built_in">is</span>.numeric(x) &amp;&amp; !<span class="hljs-built_in">is</span>.numeric(y)) {
+      <span class="hljs-built_in">num</span> &lt;- x
+      ctg &lt;- y
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">is</span>.numeric(x) &amp;&amp; <span class="hljs-built_in">is</span>.numeric(y)) {
+      <span class="hljs-built_in">num</span> &lt;- y
+      ctg &lt;- x
+    } <span class="hljs-keyword">else</span> {
+      stop(<span class="hljs-string">"One input must be numeric and the other categorical"</span>)
+    }
+
+    df &lt;- data.frame(<span class="hljs-built_in">num</span>=<span class="hljs-built_in">num</span>, ctg=as.<span class="hljs-built_in">factor</span>(ctg))
+
+#Makes boxplots horizontal <span class="hljs-keyword">for</span> two <span class="hljs-built_in">box</span> plots
+    <span class="hljs-keyword">if</span>(horizontal) {
+      ggplot(df, aes(x=<span class="hljs-built_in">num</span>, y=ctg))+
+        geom_boxplot()+
+        labs(x=<span class="hljs-string">"Value"</span>, y=<span class="hljs-string">"Group"</span>)+
+        theme_minimal()
+    }<span class="hljs-keyword">else</span>{
+      ggplot(df, aes(x=ctg, y=<span class="hljs-built_in">num</span>))+
+        geom_boxplot()+
+        labs(x=<span class="hljs-string">"Group"</span>, y=<span class="hljs-string">"Value"</span>)+
+        theme_minimal()
+    }
+  }
+}
+</code></pre>
+<h1 id="problem-2-57-points-">Problem 2 (57 points)</h1>
+<h3 id="part-a-6-points-">Part a (6 points)</h3>
+<p>Learn about the built-in <code>read.fwf()</code> <strong>R</strong> function for use in downloading data from a URL into <strong>R</strong>. The <code>widths</code> and <code>strip.white</code> options will be especially useful here. Use this function to download the scores for all college basketball games for the 2024-2025 season <a href="http://kenpom.com/cbbga26.txt">http://kenpom.com/cbbga26.txt</a> and then convert it to a tibble (load the <code>tidyverse</code> package first). The second team listed per line is the home team. It is not clear what the numbers, letters, or city names indicate after the second listed score. Notice that this is a &quot;live&quot; file that gets updated every day! So, your tibble size may change if you work on this assignment over the course of several days. That&#39;s fine. Give the code you used to download these data in a labeled code chunk.</p>
+<pre><code class="lang-{r}"><span class="hljs-comment">#| label: read_bb</span>
+<span class="hljs-comment">#| #| echo: true</span>
+library(tidyverse)
+<span class="hljs-attr">bb</span> = as_tibble(read.fwf(<span class="hljs-string">"http://kenpom.com/cbbga26.txt"</span>, <span class="hljs-attr">widths</span> = c(<span class="hljs-number">10</span>, <span class="hljs-number">23</span>, <span class="hljs-number">5</span>, <span class="hljs-number">23</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">17</span>), strip.<span class="hljs-attr">white</span> = TRUE))
+</code></pre>
+<p>Now lets practice using our tidy data/tidyverse tools! Using your <code>cbbga</code> tibble, try doing the following. In each part, save the object as a new tibble (like <code>cbbga2</code>, <code>cbbga3</code>, etc) and in each subsequent part, use the tibble you created in the previous part. </p>
+<h3 id="part-b-2-points-">Part b (2 points)</h3>
+<p>Use <code>rename()</code> to rename all of your variables to names that make sense. Then print the first six rows of the new tibble using the <code>head()</code> function. </p>
+<pre><code class="lang-{r}"><span class="hljs-comment">#| label: Rename</span>
+<span class="hljs-comment">#| echo: true</span>
+<span class="hljs-attr">bb2</span> = rename(bb, <span class="hljs-attr">date</span> = V1, <span class="hljs-attr">visiting_team</span> = V2, <span class="hljs-attr">visiting_score</span> = V3, 
+             <span class="hljs-attr">home_team</span> = V4, <span class="hljs-attr">home_score</span> = V5)
+head(bb2, <span class="hljs-number">6</span>)
+</code></pre>
+<h3 id="part-c-2-points-">Part c (2 points)</h3>
+<p>Use <code>mutate()</code> to create a new column that gives the score differences (home team score minus away team score). Then print the first six rows of the new tibble using the <code>head()</code> function. </p>
+<pre><code class="lang-{r}"><span class="hljs-comment">#| label: Mutate</span>
+<span class="hljs-comment">#| echo: true</span>
+<span class="hljs-keyword">bb3 </span>= mutate(<span class="hljs-keyword">bb2, </span><span class="hljs-keyword">scorediff </span>= home_score - visiting_score)
+head(<span class="hljs-keyword">bb3, </span><span class="hljs-number">6</span>)
+</code></pre>
+<h3 id="part-d-2-points-">Part d (2 points)</h3>
+<p>Use <code>arrange()</code> to sort the data set by the home team alphabetically. Then print the first six rows of the new tibble using the <code>head()</code> function. </p>
+<pre><code class="lang-{r}"><span class="hljs-comment">#| label: Arrange</span>
+<span class="hljs-comment">#| echo: true</span>
+<span class="hljs-keyword">bb4 </span>= arrange(<span class="hljs-keyword">bb3, </span>home_team)
+head(<span class="hljs-keyword">bb4, </span><span class="hljs-number">6</span>)
+</code></pre>
+<h3 id="part-e-2-points-">Part e (2 points)</h3>
+<p>Use <code>select()</code> to remove the extra variable(s) that had that irrelevant information at the end of each line. Note: you can select every variable except one by using <code>!</code>. Then print the first six rows of the new tibble using the <code>head()</code> function. </p>
+<pre><code class="lang-{r}"><span class="hljs-comment">#| label: Select</span>
+<span class="hljs-comment">#| echo: true</span>
+<span class="hljs-keyword">bb5 </span>= select(<span class="hljs-keyword">bb4, </span>!c(V6, V7))
+head(<span class="hljs-keyword">bb5, </span><span class="hljs-number">6</span>)
+</code></pre>
+<h3 id="part-f-3-points-">Part f (3 points)</h3>
+<p>Put parts a-e all together in one piping expression (with 5 pipes) and save this as a new object in <strong>R</strong>.</p>
+<pre><code class="lang-{r}"><span class="hljs-comment">#| label: Parts a-e</span>
+<span class="hljs-comment">#| echo: true</span>
+<span class="hljs-attr">bb_final</span> = bb %&gt;% 
+  rename(<span class="hljs-attr">date</span> = V1, <span class="hljs-attr">visiting_team</span> = V2, <span class="hljs-attr">visiting_score</span> = V3, <span class="hljs-attr">home_team</span> = V4, <span class="hljs-attr">home_score</span> = V5) %&gt;% 
+  mutate(<span class="hljs-attr">scorediff</span> = home_score - visiting_score) %&gt;%  
+  arrange(home_team) %&gt;% 
+  select(!c(V6, V7))
+</code></pre>
+<h3 id="part-g-3-points-">Part g (3 points)</h3>
+<p>Use <code>filter()</code> to reduce the data down to only games played in 2025 (you could use the <code>lubridate</code> package for this, since it specializes in dealing with dates, but some base <strong>R</strong> packages will also work). Save this in a new tibble. <strong>We will use this tibble with only the 2025 years from here on out</strong>. </p>
+<pre><code class="lang-{r}"><span class="hljs-comment">#| label: 2025 dates ONLY</span>
+<span class="hljs-comment">#| echo: true</span>
+library(lubridate)
+bb_final = mutate(bb_final, <span class="hljs-built_in">date</span> = mdy(<span class="hljs-built_in">date</span>))
+bb_final = filter(bb_final, <span class="hljs-built_in">year</span>(<span class="hljs-built_in">date</span>) == <span class="hljs-number">2025</span>)
+</code></pre>
+<h3 id="part-h-4-points-">Part h (4 points)</h3>
+<p>Write a function that will filter the tibble to only games played by a given team. Demonstrate your function by displaying games played by SUU in 2025.</p>
+<pre><code class="lang-{r}"><span class="hljs-comment">#| label: Games by team</span>
+<span class="hljs-comment">#| echo: true</span>
+chooseteam &lt;- <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-title">team</span>) {</span>
+  <span class="hljs-built_in">filter</span> = <span class="hljs-built_in">filter</span>(bb_final, home_team == team | visiting_team == team)
+  <span class="hljs-built_in">filter</span>
+}
+head(chooseteam(<span class="hljs-string">"Southern Utah"</span>))
+</code></pre>
+<h3 id="part-i-7-points-">Part i (7 points)</h3>
+<p>Use <code>summarize()</code> to extract SUU&#39;s win/loss record and winning percentage for their 2025 games. Hint: using the <code>case_when()</code> function inside of a <code>mutate()</code> function to create a new variable that indicates whether SUU won or lost is helpful. You can verify on the Internet that SUU had 4 wins and 10 losses in 2025, so if your code retruns those values, you did it correctly. </p>
+<pre><code class="lang-{r}"><span class="hljs-attr">#| label: SUU wins/losses
+#| echo: true
+mutate(chooseteam("Southern Utah"), win = case_when(
+
+  home_team == "Southern Utah" &amp; scorediff &gt; 0</span> ~ <span class="hljs-string">"W"</span>,
+  home_team == <span class="hljs-string">"Southern Utah"</span> &amp; scorediff &lt;= <span class="hljs-number">0</span> ~ <span class="hljs-string">"L"</span>,
+  home_team != <span class="hljs-string">"Southern Utah"</span> &amp; scorediff &gt; <span class="hljs-number">0</span> ~ <span class="hljs-string">"L"</span>,
+  home_team != <span class="hljs-string">"Southern Utah"</span> &amp; scorediff &lt;= <span class="hljs-number">0</span> ~ <span class="hljs-string">"W"</span>
+  )
+) <span class="hljs-meta">%</span>&gt;<span class="hljs-meta">%</span> 
+  group_by<span class="hljs-comment">(win)</span> <span class="hljs-meta">%</span>&gt;<span class="hljs-meta">%</span> 
+  summarize<span class="hljs-comment">(Count = n()</span>) <span class="hljs-meta">%</span>&gt;<span class="hljs-meta">%</span> 
+  mutate<span class="hljs-comment">(Winpct = Count/sum(Count)</span>)
+</code></pre>
+<h3 id="part-j-7-points-">Part j (7 points)</h3>
+<p>Generalize this by writing a function that will do this for a given team, and create a tibble with this information for all teams. Arrange this tibble first by winning percentage (descending) and by team (alphabetically) if there are any ties when it comes to winning percentage. A <code>for</code> loop and the <code>add_row()</code> function may be useful here.</p>
+<pre><code class="lang-{r}"><span class="hljs-comment">#| label: W/L count (any team)</span>
+<span class="hljs-comment">#| echo: true</span>
+
+<span class="hljs-attr">wlcount</span> = function(team) {
+  <span class="hljs-attr">counts</span> = mutate(chooseteam(team), <span class="hljs-attr">win</span> = case_when(
+
+  <span class="hljs-attr">home_team</span> == team &amp; scorediff &gt; <span class="hljs-number">0</span> ~ <span class="hljs-string">"W"</span>,
+  <span class="hljs-attr">home_team</span> == team &amp; scorediff &lt;= <span class="hljs-number">0</span> ~ <span class="hljs-string">"L"</span>,
+  home_team != team &amp; scorediff &gt; <span class="hljs-number">0</span> ~ <span class="hljs-string">"L"</span>,
+  home_team != team &amp; scorediff &lt;= <span class="hljs-number">0</span> ~ <span class="hljs-string">"W"</span>
+  )
+) %&gt;% 
+  group_by(win) %&gt;% 
+  summarize(<span class="hljs-attr">Team</span> = team, <span class="hljs-attr">WinCount</span> = n()) %&gt;% 
+    mutate(<span class="hljs-attr">Winpct</span> = WinCount/sum(WinCount)) %&gt;% 
+    filter(<span class="hljs-attr">win</span> == <span class="hljs-string">"W"</span>) %&gt;%  
+    select(!win)
+  return(counts)
+}
+<span class="hljs-attr">teams</span> = unique(c(bb_final$home_team, bb_final$visiting_team))
+all_team_stats &lt;- map_dfr(teams, wlcount) |&gt; 
+  arrange(desc(Winpct), Team)
+</code></pre>
+<h3 id="part-k-5-points-">Part k (5 points)</h3>
+<p>With only the 2025 games, use the <code>gghist()</code> you wrote in Problem 1 on the score differences variable you created in part c. Add appropriate labels and a title to your graph. Also, use the <code>#| fig-width:</code>, <code>#| fig-height:</code>, <code>#| out-width:</code>, and <code>#| fig-align:</code> code chunk options to center the figure and then to adjust your figure to a size you like. Play around with different sizes to see what those options adjust. </p>
+<pre><code class="lang-{r}"><span class="hljs-meta">#| label: 2025 hist</span>
+<span class="hljs-meta">#| echo: true</span>
+<span class="hljs-meta">#| fig-width: 15</span>
+<span class="hljs-meta">#| fig-height: 15</span>
+gghist(bb_final$scorediff)+
+  labs(x = <span class="hljs-string">"Score Difference"</span>, y = <span class="hljs-string">"Frequency"</span>)+
+  theme(color=<span class="hljs-string">"black"</span>, fill=<span class="hljs-string">"purple"</span>)
+  stat_bin(binwidth = <span class="hljs-number">30</span>)
+</code></pre>
+<h3 id="part-l-9-points-">Part l (9 points)</h3>
+<p>Filter the tibble with all 2025 games to only include Utah Tech or Southern Utah, then crate a tibble or data frame where each row is a game played by either team that has one column indicating the school, Utah Tech or Southern Utah, and a second column indicating the number of points that team played, regardless of whether the team was home or away. Then use your <code>ggbox()</code> function to create a side-by-side boxplot of number of points scored in all 2025 games for each team.</p>
+<p>Note, this is a little challenging. The most straightforward way to do this is to use the <code>pivot_longer()</code> function with <code>cols =</code> the names of the two columns that have the away and the home teams (the names of these columns should not be in quotes, but they should be in a vector <code>c()</code>). Try to do this yourself first, but using AI for some help is fine. </p>
+<pre><code class="lang-{r}"><span class="hljs-comment">#| label: UT tech &amp; SUU scores</span>
+<span class="hljs-attr">utbb</span> = bb_final %&gt;% 
+  filter(<span class="hljs-attr">home_team</span> == <span class="hljs-string">"Southern Utah"</span> | <span class="hljs-attr">visiting_team</span> == <span class="hljs-string">"Southern Utah"</span> | <span class="hljs-attr">home_team</span> == <span class="hljs-string">"Utah Tech"</span> | <span class="hljs-attr">visiting_team</span> == <span class="hljs-string">"Utah Tech"</span>)
+
+<span class="hljs-attr">longbb</span> = utbb %&gt;% 
+  reframe(
+    <span class="hljs-attr">team</span> = c(home_team, visiting_team),
+    <span class="hljs-attr">score</span> = c(home_score, visiting_score)
+  ) %&gt;% 
+  filter(<span class="hljs-attr">team</span> == <span class="hljs-string">"Southern Utah"</span> | <span class="hljs-attr">team</span> == <span class="hljs-string">"Utah Tech"</span>)
+<span class="hljs-comment">#couldnt get ggbox to work</span>
+</code></pre>
+<h3 id="part-m-5-points-">Part m (5 points)</h3>
+<p>Create one more appropriate graphs for the 2025 basketball data. This graph could be anything you&#39;d like as long as you use <code>ggplot2</code>, it shows something meaningful, and it is not the same as the graphs you made in parts k or l. </p>
+<pre><code class="lang-{r}">#I did <span class="hljs-keyword">not</span> allow myself enough <span class="hljs-built_in">time</span> <span class="hljs-keyword">to</span> complete this part <span class="hljs-keyword">and</span> <span class="hljs-keyword">get</span> the assignment turned <span class="hljs-keyword">in</span> <span class="hljs-keyword">on</span> <span class="hljs-built_in">time</span>
+</code></pre>
+<h1 id="problem-3-15-points-">Problem 3 (15 points)</h1>
+<p>Repeat parts b-e and g of Problem 2 using Python in Quarto. First, pass the original object that you read in from the website to Python without any changes to it (you do not need to read the file from the web in Python, but you can if you&#39;d like) and then use <code>pandas</code> (or <code>polars</code> if you&#39;d like) to rename the columns as indicated in part b, add the columns specified in part c, arrange the data as in part d, drop the &quot;garbage&quot; column as in part e, and filter it down as in part g. The <code>pandas</code> functions <code>rename</code>, <code>assign</code> (instead of <code>mutate</code>), <code>drop</code> (instead of <code>select</code>) and <code>str.contains</code> (used to select the right rows) will be useful here. Be sure to follow the guide in Notes 3 to properly install Python, install the <code>pandas</code> library and to load it in <strong>R</strong>.</p>
+<pre><code class="lang-{r}">#| <span class="hljs-selector-tag">label</span>: <span class="hljs-selector-tag">Python</span> <span class="hljs-selector-tag">packages</span>
+<span class="hljs-selector-tag">install</span><span class="hljs-selector-class">.packages</span>(<span class="hljs-string">"reticulate"</span>)
+<span class="hljs-selector-tag">library</span>(reticulate)
+<span class="hljs-selector-tag">install_python</span>(<span class="hljs-string">"3.14.0"</span>)
+<span class="hljs-selector-tag">py_install</span>(packages = <span class="hljs-string">"matplotlib"</span>)
+<span class="hljs-selector-tag">py_install</span>(packages = <span class="hljs-string">"numpy"</span>)
+<span class="hljs-selector-tag">py_install</span>(packages = <span class="hljs-string">"pandas"</span>)
+</code></pre>
+<pre><code class="lang-{python}">
+bb_final=(
+  <span class="hljs-name">bb</span>
+  .rename(<span class="hljs-name">columns=</span>{
+        <span class="hljs-string">"V1"</span>: <span class="hljs-string">"date"</span>,
+        <span class="hljs-string">"V2"</span>: <span class="hljs-string">"visiting_team"</span>,
+        <span class="hljs-string">"V3"</span>: <span class="hljs-string">"visiting_score"</span>,
+        <span class="hljs-string">"V4"</span>: <span class="hljs-string">"home_team"</span>,
+        <span class="hljs-string">"V5"</span>: <span class="hljs-string">"home_score"</span>
+    })
+
+    .assign(<span class="hljs-name">scorediff=lambda</span> df: df[<span class="hljs-string">"home_score"</span>] - df[<span class="hljs-string">"visiting_score"</span>])
+
+    .sort_values(<span class="hljs-string">"home_team"</span>)
+
+    .drop(<span class="hljs-name">columns=</span>[<span class="hljs-string">"V6"</span>, <span class="hljs-string">"V7"</span>])
+)
+</code></pre>
+</body></html>

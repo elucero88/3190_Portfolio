@@ -1,0 +1,39 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "3190 Portfolio Website"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+      - href: Homework/Homework1_Lucero.html
+        text: Homework 1
+      - href: Homework/Homework_2.html
+        text: Homework 2
+      - href: Homework/Homework_3.html
+        text: Homework 3
+      - href: Homework/Homework_4.html
+        text: Homework 4
+      - href: Homework/Homework_5.html
+        text: Homework 5
+      - href: Homework/Homework_6.html
+        text: Homework 6
+      - href: Homework/Homework_7.html
+        text: Homework 7
+      - href: Homework/Homework_8.html
+        text: Homework 8
+      
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    css: styles.css
+    toc: true
+
+editor: visual
+
