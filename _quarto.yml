@@ -4,11 +4,10 @@ project:
 
 website:
   title: "3190 Portfolio Website"
-  navbar:
-    left:
+  sidebar:
+    contents: 
       - href: index.qmd
         text: Home
-      - about.qmd
       - href: Homework/Homework1_Lucero.html
         text: Homework 1
       - href: Homework/Homework_2.html
@@ -29,9 +28,7 @@ website:
 
 format:
   html:
-    theme:
-      - cosmo
-      - brand
+    theme: lux
     css: styles.css
     toc: true
 

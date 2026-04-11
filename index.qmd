@@ -2,10 +2,5 @@
 title: "3190 Portfolio Website"
 ---
 
-This is a Quarto website.
+This is my portfolio for Math 3190 Spring 2026. Here I have the html files for homework assignments 1-10 easily accessible and in one place.
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
-```{r}
-1 + 1
-```
