@@ -1,5 +1,5 @@
 ---
-title: "3190 Portfolio Website"
+title: "Math 3190 Portfolio Spr 26!"
 ---
 
 This is my portfolio for Math 3190 Spring 2026. Here I have the html files for homework assignments 1-10 easily accessible and in one place.

@@ -3,8 +3,12 @@ project:
   output-dir: docs
 
 website:
-  title: "3190 Portfolio Website"
+  title: "⭐️3190 Website-Emily Lucero ⭐️"
+  navbar: 
+    left: []
   sidebar:
+    style: "docked"
+    search: true
     contents: 
       - href: index.qmd
         text: Home
@@ -24,11 +28,14 @@ website:
         text: Homework 7
       - href: Homework/Homework_8.html
         text: Homework 8
+      - href: Homework/Homework_9.html
+        text: Homework 9
       
 
 format:
   html:
-    theme: lux
+    mainfont: "Georgia"
+    theme: Pulse
     css: styles.css
     toc: true
 
